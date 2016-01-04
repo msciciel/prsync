@@ -24,7 +24,7 @@ def worker():
         if args.debug:
             print "Syncing {0}/{2} to {1}/{2} ...".format(args.src, args.dst, item)
 
-        os.system( "{0} {1}/{3}/ {2}/{3}/".format(RSYNC, args.src, args.dst, item))
+        os.system( "{0} '{1}/{3}/' '{2}/{3}/'".format(RSYNC, args.src, args.dst, item))
         for dir in next(os.walk("{0}/{1}".format(args.src, item)))[1]:
             q.put("{0}/{1}".format(item, dir))
         q.task_done()
