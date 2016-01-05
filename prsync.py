@@ -6,6 +6,7 @@ from threading import Thread
 import os
 import time
 import sys
+import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--workers", type=int,  help="number of workers", default=1)
@@ -14,7 +15,7 @@ parser.add_argument("dst", help="destination directory")
 parser.add_argument("--debug", action="store_true", help="increase output verbosity")
 args = parser.parse_args()
 
-RSYNC="rsync -lptgoDxWd --inplace --size-only"
+RSYNC = ['rsync', '-lptgoDxWd', '--inplace', '--size-only']
 start = time.time()
 
 def worker():
@@ -24,7 +25,10 @@ def worker():
         if args.debug:
             print "Syncing {0}/{2} to {1}/{2} ...".format(args.src, args.dst, item)
 
-        os.system( "{0} '{1}/{3}/' '{2}/{3}/'".format(RSYNC, args.src, args.dst, item))
+        src = ['{0}/{1}/'.format(args.src, item)]
+        dst = ['{0}/{1}/'.format(args.dst, item)]
+        subprocess.call(RSYNC + src + dst)
+
         for dir in next(os.walk("{0}/{1}".format(args.src, item)))[1]:
             q.put("{0}/{1}".format(item, dir))
         q.task_done()
