@@ -19,6 +19,7 @@ args = parser.parse_args()
 RSYNC = ['rsync', '-lptgoDxWd', '--inplace', '--size-only']
 start = time.time()
 
+
 def worker():
     while True:
         item = q.get()
@@ -34,6 +35,7 @@ def worker():
             for dir in next(os.walk("{0}/{1}".format(args.src, item)))[1]:
                 q.put("{0}/{1}".format(item, dir))
         q.task_done()
+
 
 def status():
     while True:
@@ -59,4 +61,4 @@ else:
 
 q.join()
 
-print("\nTotal time: {0} s".format(int(time.time()- start)))
+print("\nTotal time: {0} s".format(int(time.time()-start)))
