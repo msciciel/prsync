@@ -39,7 +39,7 @@ def worker():
 
 def status():
     while True:
-        sys.stdout.write("Directories left: {0}, Time: {1} s\r".format(q.qsize(), int(time.time() - start)))
+        sys.stdout.write("Directories left: {0}, Time: {1} s     \r".format(q.qsize(), int(time.time() - start)))
         sys.stdout.flush()
         time.sleep(1)
 
