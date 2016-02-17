@@ -55,7 +55,7 @@ t.start()
 
 if args.dirs:
     for file in open(args.dirs).read().splitlines():
-        q.put(file)
+        q.put(file.rstrip())
 else:
     q.put('/')
 
