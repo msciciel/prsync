@@ -10,6 +10,7 @@ import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--workers", type=int,  help="number of workers", default=1)
+parser.add_argument("--dirs", help="synchronize only dirs from file", default=False)
 parser.add_argument("src", help="source directory")
 parser.add_argument("dst", help="destination directory")
 parser.add_argument("--debug", action="store_true", help="increase output verbosity")
@@ -29,8 +30,9 @@ def worker():
         dst = ['{0}/{1}/'.format(args.dst, item)]
         subprocess.call(RSYNC + src + dst)
 
-        for dir in next(os.walk("{0}/{1}".format(args.src, item)))[1]:
-            q.put("{0}/{1}".format(item, dir))
+        if not args.dirs:
+            for dir in next(os.walk("{0}/{1}".format(args.src, item)))[1]:
+                q.put("{0}/{1}".format(item, dir))
         q.task_done()
 
 def status():
@@ -49,7 +51,11 @@ t = Thread(target=status)
 t.daemon = True
 t.start()
 
-q.put('/')
+if args.dirs:
+    for file in open(args.dirs).read().splitlines():
+        q.put(file)
+else:
+    q.put('/')
 
 q.join()
 

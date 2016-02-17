@@ -5,7 +5,7 @@ The number of workers is configured from command line as parameter.
 
 ## Usage
 ```
-usage: prsync.py [-h] [--workers WORKERS] [--debug] src dst
+usage: prsync.py [-h] [--workers WORKERS] [--dirs FILE] [--debug] src dst
 
 positional arguments:
   src                source directory
@@ -15,6 +15,7 @@ optional arguments:
   -h, --help         show this help message and exit
   --workers WORKERS  number of workers
   --debug            increase output verbosity
+  --dirs FILE        synchronize only dirs from file  
 ```
 
 ## Example
