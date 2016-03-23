@@ -30,6 +30,7 @@ def worker():
         src = ['{0}/{1}/'.format(args.src, item)]
         dst = ['{0}/{1}/'.format(args.dst, item)]
         subprocess.call(RSYNC + src + dst)
+        s.put('.')
 
         if not args.dirs:
             for dir in next(os.walk("{0}/{1}".format(args.src, item)))[1]:
@@ -39,10 +40,12 @@ def worker():
 
 def status():
     while True:
-        sys.stdout.write("Directories left: {0}, Time: {1} s     \r".format(q.qsize(), int(time.time() - start)))
+        sys.stdout.write("Directories left / total: {0} / {1}, Time: {2} s     \r".format(
+            q.qsize(), s.qsize(), int(time.time() - start)))
         sys.stdout.flush()
         time.sleep(1)
 
+s = Queue()
 q = Queue()
 for i in range(args.workers):
     t = Thread(target=worker)
@@ -61,4 +64,4 @@ else:
 
 q.join()
 
-print("\nTotal time: {0} s".format(int(time.time()-start)))
+print("\nTotal time: {0} s, Total directories: {1}".format(int(time.time()-start)), s.qsize())
